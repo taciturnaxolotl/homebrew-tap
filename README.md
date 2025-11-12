@@ -31,6 +31,7 @@ brew services start murmur
 Edit the service configuration at `~/Library/LaunchAgents/homebrew.mxcl.murmur.plist` to customize environment variables like `PORT`, `WHISPER_MODEL`, etc.
 
 **Requirements:**
+
 - macOS 13+ (Ventura or later)
 - Apple Silicon (M1/M2/M3)
 - Xcode 14.0+

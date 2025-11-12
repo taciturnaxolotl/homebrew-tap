@@ -8,8 +8,8 @@ class Murmur < Formula
   head "https://github.com/taciturnaxolotl/murmur.git", branch: "main"
 
   depends_on xcode: ["14.0", :build]
-  depends_on :macos => :ventura
   depends_on arch: :arm64
+  depends_on macos: :ventura
 
   def install
     system "swift", "build", "-c", "release", "--disable-sandbox"

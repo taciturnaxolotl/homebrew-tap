@@ -17,6 +17,14 @@ jobs:
       packages: write
       pull-requests: write
     steps:
+      - name: Wait for test-bot
+        uses: lewagon/wait-on-check-action@v1.3.4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          check-regexp: 'test-bot.*'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          wait-interval: 30
+          
       - name: Set up Homebrew
         uses: Homebrew/actions/setup-homebrew@main
         with:

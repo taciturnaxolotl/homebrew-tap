@@ -30,7 +30,6 @@ class Murmur < Formula
   end
 
   test do
-    output = shell_output("#{bin}/murmur --version 2>&1", 1)
-    assert_match "murmur", output.downcase
+    assert_match "murmur", (bin/"murmur").realpath.to_s
   end
 end

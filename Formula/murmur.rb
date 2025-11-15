@@ -1,8 +1,8 @@
 class Murmur < Formula
   desc "Job-based Whisper transcription server for macOS with Neural Engine acceleration"
   homepage "https://github.com/taciturnaxolotl/murmur"
-  url "https://github.com/taciturnaxolotl/murmur/archive/refs/tags/v0.1.0.tar.gz"
-  sha256 "4c9346b9252dfcbcc2cd6adde84e75304fea22ffd389999b29258906a1d5ed70"
+  url "https://github.com/taciturnaxolotl/murmur/archive/refs/tags/v0.1.1.tar.gz"
+  sha256 "80296bb4817b57468f5c3ba507ee86baf3477e205fa2eddce087e4a6a89514c3"
   license "AGPL-3.0"
   head "https://github.com/taciturnaxolotl/murmur.git", branch: "main"
 

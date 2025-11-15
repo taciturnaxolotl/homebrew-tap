@@ -8,7 +8,7 @@ class Murmur < Formula
 
   bottle do
     root_url "https://ghcr.io/v2/taciturnaxolotl/tap"
-    sha256 cellar: :any_skip_relocation, arm64_tahoe: "d79a393aa243537dd36ae166368eafd332913047f4022b0d4207f0dc5d10e7b5"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe: "02fcfaa70b57b52d068bc6f68b54397b59213937e357f75dffcda3cb9a22ab8e"
   end
 
   depends_on xcode: ["14.0", :build]

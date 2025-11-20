@@ -7,6 +7,12 @@ class Murmur < Formula
   revision 3
   head "https://github.com/taciturnaxolotl/murmur.git", branch: "main"
 
+  bottle do
+    root_url "https://ghcr.io/v2/taciturnaxolotl/tap"
+    rebuild 1
+    sha256 cellar: :any_skip_relocation, arm64_tahoe: "960d8584d3cde937dff5c779ec5969f36153b58112353801ed4224fa9548d53b"
+  end
+
   depends_on xcode: ["14.0", :build]
   depends_on arch: :arm64
   depends_on macos: :ventura

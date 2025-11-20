@@ -6,7 +6,6 @@ class Murmur < Formula
   license "AGPL-3.0"
   head "https://github.com/taciturnaxolotl/murmur.git", branch: "main"
 
-
   depends_on xcode: ["14.0", :build]
   depends_on arch: :arm64
   depends_on macos: :ventura

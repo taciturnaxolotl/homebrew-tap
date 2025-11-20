@@ -4,6 +4,7 @@ class Murmur < Formula
   url "https://github.com/taciturnaxolotl/murmur/archive/refs/tags/v0.1.3.tar.gz"
   sha256 "5b8f5aa91df18a0e8f3858ceed407c7de139cd8951917575806d6fc8c3dd806f"
   license "AGPL-3.0"
+  revision 1
   head "https://github.com/taciturnaxolotl/murmur.git", branch: "main"
 
   depends_on xcode: ["14.0", :build]

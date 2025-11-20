@@ -1,9 +1,6 @@
 name: brew test-bot
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
 
 jobs:
@@ -39,7 +36,6 @@ jobs:
       - run: brew test-bot --only-tap-syntax
       - name: Base64-encode GITHUB_TOKEN for HOMEBREW_DOCKER_REGISTRY_TOKEN
         id: base64-encode
-        if: github.event_name == 'pull_request'
         env:
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -47,12 +43,11 @@ jobs:
           echo "::add-mask::${base64_token}"
           echo "token=${base64_token}" >> "${GITHUB_OUTPUT}"
       - run: brew test-bot --only-formulae --root-url=https://ghcr.io/v2/taciturnaxolotl/tap
-        if: github.event_name == 'pull_request'
         env:
           HOMEBREW_DOCKER_REGISTRY_TOKEN: ${{ steps.base64-encode.outputs.token }}
 
       - name: Upload bottles as artifact
-        if: always() && github.event_name == 'pull_request'
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: bottles_${{ matrix.os }}

@@ -36,6 +36,15 @@ jobs:
 
       - run: brew test-bot --only-setup
 
+      - name: Detect changed formulae
+        id: detect
+        run: |
+          # Get the list of changed formulae
+          cd $(brew --repository $GITHUB_REPOSITORY)
+          formulae=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} -- Formula/ | sed 's|Formula/||' | sed 's|\.rb$||' | tr '\n' ' ')
+          echo "formulae=${formulae}" >> "${GITHUB_OUTPUT}"
+          echo "Changed formulae: ${formulae}"
+
       - name: Base64-encode GITHUB_TOKEN for HOMEBREW_DOCKER_REGISTRY_TOKEN
         id: base64-encode
         env:
@@ -45,7 +54,12 @@ jobs:
           echo "::add-mask::${base64_token}"
           echo "token=${base64_token}" >> "${GITHUB_OUTPUT}"
 
-      - run: brew test-bot --only-formulae --root-url=https://ghcr.io/v2/taciturnaxolotl/tap
+      - run: |
+          if [ -n "${{ steps.detect.outputs.formulae }}" ]; then
+            brew test-bot --only-formulae --root-url=https://ghcr.io/v2/taciturnaxolotl/tap ${{ steps.detect.outputs.formulae }}
+          else
+            echo "No formulae changed, skipping"
+          fi
         env:
           HOMEBREW_DOCKER_REGISTRY_TOKEN: ${{ steps.base64-encode.outputs.token }}
 

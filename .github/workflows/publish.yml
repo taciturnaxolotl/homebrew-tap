@@ -84,9 +84,7 @@ jobs:
           HOMEBREW_GITHUB_PACKAGES_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           HOMEBREW_GITHUB_PACKAGES_USER: ${{ github.repository_owner }}
         run: |
-          for bottle in *.bottle.*; do
-            brew pr-upload --debug --root-url=https://ghcr.io/v2/taciturnaxolotl/tap "$bottle"
-          done
+          brew pr-upload --debug --root-url=https://ghcr.io/v2/taciturnaxolotl/tap
 
       - name: Commit bottle updates
         env:

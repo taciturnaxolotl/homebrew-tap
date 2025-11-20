@@ -1,30 +1,69 @@
-name: brew pr-pull
+name: Build and Publish Bottles
 
 on:
-  pull_request_target:
-    types:
-      - labeled
+  push:
+    branches:
+      - main
+    paths:
+      - 'Formula/**'
 
 jobs:
-  pr-pull:
-    if: contains(github.event.pull_request.labels.*.name, 'pr-pull')
-    runs-on: ubuntu-22.04
+  build-bottles:
+    strategy:
+      matrix:
+        os: [ ubuntu-22.04, macos-15-intel, macos-26 ]
+    runs-on: ${{ matrix.os }}
     permissions:
       actions: read
       checks: read
+      contents: read
+      packages: write
+    steps:
+      - name: Set up Homebrew
+        id: set-up-homebrew
+        uses: Homebrew/actions/setup-homebrew@main
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Cache Homebrew Bundler RubyGems
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.set-up-homebrew.outputs.gems-path }}
+          key: ${{ matrix.os }}-rubygems-${{ steps.set-up-homebrew.outputs.gems-hash }}
+          restore-keys: ${{ matrix.os }}-rubygems-
+
+      - run: brew test-bot --only-cleanup-before
+
+      - run: brew test-bot --only-setup
+
+      - name: Base64-encode GITHUB_TOKEN for HOMEBREW_DOCKER_REGISTRY_TOKEN
+        id: base64-encode
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          base64_token=$(echo -n "${TOKEN}" | base64 | tr -d "\n")
+          echo "::add-mask::${base64_token}"
+          echo "token=${base64_token}" >> "${GITHUB_OUTPUT}"
+
+      - run: brew test-bot --only-formulae --root-url=https://ghcr.io/v2/taciturnaxolotl/tap
+        env:
+          HOMEBREW_DOCKER_REGISTRY_TOKEN: ${{ steps.base64-encode.outputs.token }}
+
+      - name: Upload bottles as artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bottles_${{ matrix.os }}
+          path: '*.bottle.*'
+
+  publish-bottles:
+    needs: build-bottles
+    runs-on: ubuntu-22.04
+    permissions:
       contents: write
-      issues: read
       packages: write
       pull-requests: write
     steps:
-      - name: Wait for test-bot
-        uses: lewagon/wait-on-check-action@v1.3.4
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          check-regexp: 'test-bot.*'
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          wait-interval: 30
-          
       - name: Set up Homebrew
         uses: Homebrew/actions/setup-homebrew@main
         with:
@@ -33,21 +72,30 @@ jobs:
       - name: Set up git
         uses: Homebrew/actions/git-user-config@main
 
-      - name: Pull bottles
+      - name: Download all bottle artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: bottles_*
+          merge-multiple: true
+
+      - name: Upload bottles to GitHub Packages
         env:
           HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           HOMEBREW_GITHUB_PACKAGES_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           HOMEBREW_GITHUB_PACKAGES_USER: ${{ github.repository_owner }}
-          PULL_REQUEST: ${{ github.event.pull_request.number }}
-        run: brew pr-pull --debug --tap="$GITHUB_REPOSITORY" "$PULL_REQUEST"
+        run: |
+          for bottle in *.bottle.*; do
+            brew pr-upload --debug --root-url=https://ghcr.io/v2/taciturnaxolotl/tap "$bottle"
+          done
 
-      - name: Push commits
-        uses: Homebrew/actions/git-try-push@main
-        with:
-          branch: main
-
-      - name: Delete branch
-        if: github.event.pull_request.head.repo.fork == false
+      - name: Commit bottle updates
         env:
-          BRANCH: ${{ github.event.pull_request.head.ref }}
-        run: git push --delete origin "$BRANCH"
+          HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git add Formula/
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "$(ls *.bottle.* | head -n 1 | sed 's/--.*\.bottle\..*$//' | xargs -I {} echo "{}: update bottle.")"
+            git push origin main
+          fi

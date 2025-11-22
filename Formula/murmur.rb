@@ -1,14 +1,13 @@
 class Murmur < Formula
   desc "Job-based Whisper transcription server for macOS with Neural Engine acceleration"
   homepage "https://github.com/taciturnaxolotl/murmur"
-  url "https://github.com/taciturnaxolotl/murmur/archive/refs/tags/v0.2.0.tar.gz"
-  sha256 "c4731637d20f1e2f4f43b49a978a82252b326b41f5566f141c97a6112e99b318"
+  url "https://github.com/taciturnaxolotl/murmur/archive/refs/tags/v0.2.1.tar.gz"
+  sha256 "e951a9f132de12b2f855edcb89d994b451f44ad574b03774f502da19ae203c5d"
   license "AGPL-3.0"
   head "https://github.com/taciturnaxolotl/murmur.git", branch: "main"
 
   bottle do
     root_url "https://ghcr.io/v2/taciturnaxolotl/tap"
-    rebuild 1
     sha256 cellar: :any_skip_relocation, arm64_tahoe: "bfaff24b26b59f2586c52401463283cfbbe208176a72ca94f7207d72e75a48d8"
   end
 
@@ -49,7 +48,7 @@ class Murmur < Formula
         # Restrict permissions on config directory (0700) for user privacy
         # Note: chmod may fail on some filesystems; ignore failures
         begin
-          File.chmod(0o700, config_dir.to_s) if config_dir.directory?
+          File.chmod(0700, config_dir.to_s) if config_dir.directory?
         rescue Errno::EPERM, Errno::EACCES
           # ignore
         end
@@ -70,7 +69,7 @@ class Murmur < Formula
               # modelsPath: /path/to/whisper/models
 
             database:
-              path: #{(config_dir/"murmur.db").to_s}
+              path: #{config_dir/"murmur.db"}
           EOS
           tmp.rename(config_file)
         end

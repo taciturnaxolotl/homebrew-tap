@@ -6,6 +6,12 @@ class Murmur < Formula
   license "AGPL-3.0"
   head "https://github.com/taciturnaxolotl/murmur.git", branch: "main"
 
+  bottle do
+    root_url "https://ghcr.io/v2/taciturnaxolotl/tap"
+    rebuild 1
+    sha256 cellar: :any_skip_relocation, arm64_tahoe: "bfaff24b26b59f2586c52401463283cfbbe208176a72ca94f7207d72e75a48d8"
+  end
+
   depends_on xcode: ["14.0", :build]
   depends_on arch: :arm64
   depends_on macos: :ventura

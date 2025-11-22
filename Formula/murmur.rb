@@ -17,52 +17,72 @@ class Murmur < Formula
   depends_on macos: :ventura
 
   def install
+    # Build release binary
     system "swift", "build", "-c", "release", "--disable-sandbox"
     bin.install ".build/release/murmur"
   end
 
   service do
+    # Run the daemon
     run [opt_bin/"murmur"]
     keep_alive true
+    # Ensure writable working/log dirs
     working_dir var/"murmur"
     log_path var/"log/murmur.log"
     error_log_path var/"log/murmur.error.log"
-    environment_variables MURMUR_CONFIG: "#{Dir.home}/.config/murmur/murmur.yaml"
+    # Use an explicit per-user config path; derive via Pathname.expand_path to avoid nil Dir.home in service context
+    # launchd runs as the installing user for Homebrew services; this expands correctly
+    environment_variables MURMUR_CONFIG: Pathname("~/.config/murmur/murmur.yaml").expand_path.to_s
   end
 
   def post_install
+    # Ensure service directories exist
     (var/"murmur").mkpath
     (var/"log").mkpath
-    # Create default config file in ~/.config/murmur
-    # Skip if home directory is not writable (e.g., in CI environments)
+    # Create default config in ~/.config/murmur unless in non-writable/CI environment
     begin
-      config_dir = Pathname.new(Dir.home)/".config/murmur"
-      config_dir.mkpath
-      config_file = config_dir/"murmur.yaml"
-      unless config_file.exist?
-        config_file.write <<~EOS
-          # Murmur Configuration File (YAML)
+      home = Pathname("~").expand_path
+      # Skip if HOME is not set or not writable
+      if home.directory? && home.writable?
+        config_dir = home/".config/murmur"
+        config_dir.mkpath
+        # Restrict permissions on config directory (0700) for user privacy
+        # Note: chmod may fail on some filesystems; ignore failures
+        begin
+          File.chmod(0o700, config_dir.to_s) if config_dir.directory?
+        rescue Errno::EPERM, Errno::EACCES
+          # ignore
+        end
+        config_file = config_dir/"murmur.yaml"
+        unless config_file.exist?
+          # Write atomically to avoid partial files
+          tmp = config_dir/"murmur.yaml.tmp"
+          tmp.write <<~EOS
+            # Murmur Configuration File (YAML)
 
-          server:
-            host: 0.0.0.0
-            port: 8000
+            server:
+              host: 0.0.0.0
+              port: 8000
 
-          whisper:
-            model: small
-            # Optional: specify custom models directory
-            # modelsPath: /path/to/whisper/models
+            whisper:
+              model: small
+              # Optional: specify custom models directory
+              # modelsPath: /path/to/whisper/models
 
-          database:
-            path: #{config_dir}/murmur.db
-        EOS
+            database:
+              path: #{(config_dir/"murmur.db").to_s}
+          EOS
+          tmp.rename(config_file)
+        end
       end
     rescue Errno::EPERM, Errno::EACCES
-      # Skip config creation if home directory is not writable
+      # Skip config creation if home directory is not writable (e.g., CI environments)
       nil
     end
   end
 
   test do
+    # Binary exists and is linked correctly
     assert_match "murmur", (bin/"murmur").realpath.to_s
   end
 end

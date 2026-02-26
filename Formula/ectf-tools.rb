@@ -1,33 +1,26 @@
 class EctfTools < Formula
   desc "Drop-in replacement for MITRE's ectf CLI with reliable serial I/O"
   homepage "https://github.com/taciturnaxolotl/rust-ectf-tools"
+  version "0.2.0"
   license "MIT"
-
-  bottle do
-    root_url "https://ghcr.io/v2/taciturnaxolotl/tap"
-    rebuild 1
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:  "a64265c57e8844ce8876144f8bc177efd65676eacdf97f7f1495db08b0966cdd"
-    sha256 cellar: :any_skip_relocation, sequoia:      "5e853cae860f59be71e4529642cd4681ab3cd45779428e4adf87a4b5e64d7fc1"
-    sha256 cellar: :any_skip_relocation, x86_64_linux: "70cd40c3203497d0f62bbcb84cf8feb0c369e40c2d1903bf6c37c8da27a4fab2"
-  end
 
   on_macos do
     if Hardware::CPU.arm?
       url "https://github.com/taciturnaxolotl/rust-ectf-tools/releases/download/v0.2.0/ectf-tools-aarch64-apple-darwin.tar.gz"
-      sha256 "5efa05737a23e2e2f77f9dca181eca6ec67d9a260bdce117dce23f01a9fdcc58"
+      sha256 "d8a6c45e629e910bf6a8833add9bfd05de730a5bd18d0de074fec33535ce1e20"
     else
       url "https://github.com/taciturnaxolotl/rust-ectf-tools/releases/download/v0.2.0/ectf-tools-x86_64-apple-darwin.tar.gz"
-      sha256 "6dc74f6c216bd87b92e2d036aa111a79d9ba1811fca5772a1e878f9f8f47b7f2"
+      sha256 "4e23d662ffe7c825195ec9489b95a5fb765ff25a045aabcfc7327385286de650"
     end
   end
 
   on_linux do
     if Hardware::CPU.arm?
-      url "https://github.com/taciturnaxolotl/rust-ectf-tools/releases/download/v0.2.0/ectf-tools-aarch64-unknown-linux-gnu.tar.gz"
-      sha256 "ec6bcf0990c22f3dcf771830b9fe80e625c69c2521c7148d9b41d404eca70326"
+      url "https://github.com/taciturnaxolotl/rust-ectf-tools/releases/download/v0.2.0/ectf-tools-aarch64-unknown-linux-musl.tar.gz"
+      sha256 "c62efb8f9dc41d59fd10a2c0963227500462eebbdb9a20e8bfa2e7691de307ad"
     else
-      url "https://github.com/taciturnaxolotl/rust-ectf-tools/releases/download/v0.2.0/ectf-tools-x86_64-unknown-linux-gnu.tar.gz"
-      sha256 "de5146f0489cb9bf5370d864d104352b4003af42c81e9db9a9818cf6e99d2a73"
+      url "https://github.com/taciturnaxolotl/rust-ectf-tools/releases/download/v0.2.0/ectf-tools-x86_64-unknown-linux-musl.tar.gz"
+      sha256 "00cdf4467061d7e9dd3c49adf350275e74fcf81e8153aef0e3700b5bad44460c"
     end
   end
 

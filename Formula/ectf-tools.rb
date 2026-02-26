@@ -13,21 +13,21 @@ class EctfTools < Formula
 
   on_macos do
     if Hardware::CPU.arm?
-      url "https://github.com/taciturnaxolotl/rust-ectf-tools/releases/download/v0.1.0/ectf-tools-aarch64-apple-darwin.tar.gz"
-      sha256 "7bb6b0c5f27fd37cb270e292010ca7a1a92a6f33fd914ebb20b7aac6146d1981"
+      url "https://github.com/taciturnaxolotl/rust-ectf-tools/releases/download/v0.2.0/ectf-tools-aarch64-apple-darwin.tar.gz"
+      sha256 "5efa05737a23e2e2f77f9dca181eca6ec67d9a260bdce117dce23f01a9fdcc58"
     else
-      url "https://github.com/taciturnaxolotl/rust-ectf-tools/releases/download/v0.1.0/ectf-tools-x86_64-apple-darwin.tar.gz"
-      sha256 "263d8a7026fb3ab91901ac8de9b926d7e831ca5ceb999e0797d14f4ae1f28ff2"
+      url "https://github.com/taciturnaxolotl/rust-ectf-tools/releases/download/v0.2.0/ectf-tools-x86_64-apple-darwin.tar.gz"
+      sha256 "6dc74f6c216bd87b92e2d036aa111a79d9ba1811fca5772a1e878f9f8f47b7f2"
     end
   end
 
   on_linux do
     if Hardware::CPU.arm?
-      url "https://github.com/taciturnaxolotl/rust-ectf-tools/releases/download/v0.1.0/ectf-tools-aarch64-unknown-linux-gnu.tar.gz"
-      sha256 "24ff9b91bad1fad534c1119254732671b3b53b4b128e96028102bdcfb6db935b"
+      url "https://github.com/taciturnaxolotl/rust-ectf-tools/releases/download/v0.2.0/ectf-tools-aarch64-unknown-linux-gnu.tar.gz"
+      sha256 "ec6bcf0990c22f3dcf771830b9fe80e625c69c2521c7148d9b41d404eca70326"
     else
-      url "https://github.com/taciturnaxolotl/rust-ectf-tools/releases/download/v0.1.0/ectf-tools-x86_64-unknown-linux-gnu.tar.gz"
-      sha256 "c359fab470bdce2f5967ac7efcb725e95d65ecfd01de31543fd0681c6fedce19"
+      url "https://github.com/taciturnaxolotl/rust-ectf-tools/releases/download/v0.2.0/ectf-tools-x86_64-unknown-linux-gnu.tar.gz"
+      sha256 "de5146f0489cb9bf5370d864d104352b4003af42c81e9db9a9818cf6e99d2a73"
     end
   end
 

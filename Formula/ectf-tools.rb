@@ -5,10 +5,10 @@ class EctfTools < Formula
 
   bottle do
     root_url "https://ghcr.io/v2/taciturnaxolotl/tap"
-    rebuild 2
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:  "a42b83163658cbf5f88adc6f37a61ece15d88c3ec4bf509fa68a76a90adcb7ac"
-    sha256 cellar: :any_skip_relocation, sequoia:      "b49a752e2e5022f94cdc37c34409032d268b11dedde2565b2c01e379a0987f15"
-    sha256 cellar: :any_skip_relocation, x86_64_linux: "94d8a724e40342a619fcde19fafdb48f2a2ccd177655b22c8710d6593d1e42c8"
+    rebuild 3
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:  "55e12cfcbb620ff9baf755e69236442769a82779da06c799c2562b684e63c35d"
+    sha256 cellar: :any_skip_relocation, sequoia:      "b437547f12dbd2dd7f4ce46ff4e16cd2a7a9cb0216c95c949489cbf224b0bfe6"
+    sha256 cellar: :any_skip_relocation, x86_64_linux: "29ce473ca591edf3074a7eff0c2195664e82efa66c3532f152884e46f6926d26"
   end
 
   on_macos do

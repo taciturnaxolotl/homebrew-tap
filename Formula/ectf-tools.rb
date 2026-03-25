@@ -1,7 +1,6 @@
 class EctfTools < Formula
   desc "Drop-in replacement for MITRE's ectf CLI with reliable serial I/O"
   homepage "https://github.com/taciturnaxolotl/rust-ectf-tools"
-  version "0.4.0"
   license "MIT"
 
   on_macos do

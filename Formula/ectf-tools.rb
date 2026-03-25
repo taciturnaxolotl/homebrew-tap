@@ -3,6 +3,14 @@ class EctfTools < Formula
   homepage "https://github.com/taciturnaxolotl/rust-ectf-tools"
   license "MIT"
 
+  bottle do
+    root_url "https://ghcr.io/v2/taciturnaxolotl/tap"
+    rebuild 1
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:  "85d8a440a05ac84db72b3932004f93111709ef521c49a939608b1e4a96558a1b"
+    sha256 cellar: :any_skip_relocation, sequoia:      "c0ac8f924897bb2ecaa1e6b5d4aaf90b994cc604ae6ded1c8f0b625b7fdec31b"
+    sha256 cellar: :any_skip_relocation, x86_64_linux: "a1cae277faa198aafc0a363f6ee08bc6e12223e73f7d286d6908f5bece1d3ed6"
+  end
+
   on_macos do
     if Hardware::CPU.arm?
       url "https://github.com/taciturnaxolotl/rust-ectf-tools/releases/download/v0.4.1/ectf-tools-aarch64-apple-darwin-v0.4.1.tar.gz"
